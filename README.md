@@ -16,7 +16,7 @@ FENG ZIXIAO
 
 LI GUOQIONG
 
-SUN CHENGWEI
+SUN CHENGWEI 
 
 YE KAI
 
@@ -72,3 +72,25 @@ The final tool will have the following features:
 - **Educational Value**: Help users not only build models but also learn machine learning concepts during the process.
 
 Through this plan, we aim to create a tool that is both an effective learning resource and a platform for quickly validating machine learning ideas.
+
+### References
+
+1. **Blockly GitHub Repository**  
+   [https://github.com/google/blockly](https://github.com/google/blockly)  
+
+   The official repository for Google’s Blockly project, which provides the foundation for modular and drag-and-drop programming.
+
+2. **Mind+ with ml5.js KNN**  
+   [https://mindplus.dfrobot.com.cn/ml5-knn](https://mindplus.dfrobot.com.cn/ml5-knn)  
+
+   An example integrating ml5.js and KNN, demonstrating how to use drag-and-drop programming for machine learning.
+
+3. **TensorFlow.js**  
+   [https://www.tensorflow.org/js](https://www.tensorflow.org/js)  
+   A library for running machine learning models in the browser, ideal for integration with Blockly.
+
+4. **Scratch**  
+   [https://scratch.mit.edu](https://scratch.mit.edu)  
+   一个基于积木块的编程语言，适合初学者学习编程概念。
+
+这些资源可以帮助你更好地理解如何将拖放式编程与机器学习结合。
