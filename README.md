@@ -88,9 +88,3 @@ Through this plan, we aim to create a tool that is both an effective learning re
 3. **TensorFlow.js**  
    [https://www.tensorflow.org/js](https://www.tensorflow.org/js)  
    A library for running machine learning models in the browser, ideal for integration with Blockly.
-
-4. **Scratch**  
-   [https://scratch.mit.edu](https://scratch.mit.edu)  
-   一个基于积木块的编程语言，适合初学者学习编程概念。
-
-这些资源可以帮助你更好地理解如何将拖放式编程与机器学习结合。
