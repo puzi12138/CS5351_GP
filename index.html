@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google" value="notranslate">
+    <title>拖拽式机器学习训练工具</title>
+    
+    <!-- Blockly核心库 -->
+    <script src="https://unpkg.com/blockly/blockly.min.js"></script>
+    <!-- Blockly国际化 -->
+    <script src="https://unpkg.com/blockly/msg/zh-hans.js"></script>
+    <!-- TensorFlow.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
+    
+    <!-- Bootstrap样式 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    
+    <!-- 自定义样式 -->
+    <link rel="stylesheet" href="static/css/style.css">
+</head>
+
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">拖拽式机器学习训练工具</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="fileDropdown" role="button" data-toggle="dropdown">
+                        文件
+                    </a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#" id="newProject">新建项目</a>
+                        <a class="dropdown-item" href="#" id="saveProject">保存项目</a>
+                        <a class="dropdown-item" href="#" id="loadProject">加载项目</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="viewDropdown" role="button" data-toggle="dropdown">
+                        查看
+                    </a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#" id="viewCode">查看代码</a>
+                        <a class="dropdown-item" href="#" id="viewData">查看数据</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="runDropdown" role="button" data-toggle="dropdown">
+                        运行
+                    </a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#" id="runModel">运行模型</a>
+                        <a class="dropdown-item" href="#" id="stopModel">停止运行</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" id="helpButton">帮助</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 主要内容区域 -->
+    <div class="container-fluid">
+        <div class="row">
+            <!-- 左侧工具箱 -->
+            <div class="col-md-3" id="blocklyToolbox">
+                <div id="toolbox" style="display: none">
+                    <category name="数据处理" colour="%{BKY_LOOPS_HUE}">
+                        <block type="load_dataset"></block>
+                        <block type="split_data"></block>
+                        <block type="normalize_data"></block>
+                    </category>
+                    <category name="模型构建" colour="%{BKY_MATH_HUE}">
+                        <block type="create_linear_model"></block>
+                        <block type="create_neural_network"></block>
+                        <block type="add_layer"></block>
+                    </category>
+                    <category name="训练与评估" colour="%{BKY_TEXTS_HUE}">
+                        <block type="train_model"></block>
+                        <block type="evaluate_model"></block>
+                        <block type="predict"></block>
+                    </category>
+                    <category name="可视化" colour="%{BKY_VARIABLES_HUE}">
+                        <block type="plot_data"></block>
+                        <block type="plot_history"></block>
+                        <block type="confusion_matrix"></block>
+                    </category>
+                </div>
+            </div>
+            
+            <!-- 中间Blockly工作区 -->
+            <div class="col-md-6">
+                <div id="blocklyDiv" style="height: 600px;"></div>
+            </div>
+            
+            <!-- 右侧输出区域 -->
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-header">
+                        <ul class="nav nav-tabs card-header-tabs" id="outputTabs" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="console-tab" data-toggle="tab" href="#console" role="tab">控制台</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="visualization-tab" data-toggle="tab" href="#visualization" role="tab">可视化</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="code-tab" data-toggle="tab" href="#code" role="tab">代码</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-body">
+                        <div class="tab-content" id="outputTabContent">
+                            <div class="tab-pane fade show active" id="console" role="tabpanel">
+                                <pre id="consoleOutput" class="pre-scrollable" style="height: 500px;"></pre>
+                            </div>
+                            <div class="tab-pane fade" id="visualization" role="tabpanel">
+                                <div id="visualizationOutput" style="height: 500px;"></div>
+                            </div>
+                            <div class="tab-pane fade" id="code" role="tabpanel">
+                                <pre id="codeOutput" class="pre-scrollable" style="height: 500px;"></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 模态框 -->
+    <div class="modal fade" id="codeModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">生成的Python代码</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <pre id="modalCodeOutput" class="pre-scrollable" style="height: 400px;"></pre>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" id="copyCode">复制代码</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 帮助模态框 -->
+    <div class="modal fade" id="helpModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">使用帮助</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h6>基本操作</h6>
+                    <p>1. 从左侧工具箱拖拽积木块到中间工作区</p>
+                    <p>2. 连接积木块构建机器学习流程</p>
+                    <p>3. 点击"运行模型"执行训练</p>
+                    <p>4. 在右侧查看输出结果和可视化</p>
+                    
+                    <h6>积木块说明</h6>
+                    <p><strong>数据处理</strong>: 加载数据集、分割数据、归一化等操作</p>
+                    <p><strong>模型构建</strong>: 创建线性模型、神经网络等</p>
+                    <p><strong>训练与评估</strong>: 训练模型、评估性能、预测</p>
+                    <p><strong>可视化</strong>: 绘制数据、训练历史、混淆矩阵等</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript库 -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+    
+    <!-- 自定义脚本 -->
+    <script src="static/js/blocks.js"></script>
+    <script src="static/js/generators.js"></script>
+    <script src="static/js/app.js"></script>
+</body>
+</html>

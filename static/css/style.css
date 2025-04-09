@@ -1,0 +1,90 @@
+/* 主要样式表 */
+
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fa;
+}
+
+/* Blockly工作区样式 */
+#blocklyDiv {
+    height: 600px;
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* 输出区域样式 */
+.card {
+    height: 600px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.pre-scrollable {
+    max-height: 500px;
+    overflow-y: auto;
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+    font-family: 'Courier New', monospace;
+}
+
+/* 导航栏样式 */
+.navbar {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+/* 工具箱样式 */
+#blocklyToolbox {
+    padding: 15px;
+    background-color: #fff;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    height: 600px;
+    overflow-y: auto;
+}
+
+/* 按钮样式 */
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-primary:hover {
+    background-color: #0069d9;
+    border-color: #0062cc;
+}
+
+/* 可视化区域样式 */
+#visualizationOutput {
+    width: 100%;
+    height: 500px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    #blocklyDiv {
+        height: 400px;
+    }
+    
+    .card {
+        height: 400px;
+    }
+    
+    .pre-scrollable {
+        max-height: 300px;
+    }
+    
+    #blocklyToolbox {
+        height: 400px;
+    }
+}

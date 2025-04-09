@@ -50,7 +50,7 @@ To achieve this goal, we plan to perform secondary development based on Googleâ€
 3. **Module Development**  
    - **Data Processing Module**: Includes features for data importing, cleaning, and feature engineering.  
    - **Model Construction Module**: Enables users to choose different machine learning models (e.g., linear regression, decision trees, neural networks).  
-   - **Model Training and Testing Module**: Allows users to set training parameters via blocks and visualize model performance.
+   - **Model Training and Testing Module**: Allows users to set training parameters via blocks and visualize model performance
 4. **Visualization Features**  
    - Provide real-time visual feedback, such as data distribution and model performance metrics (e.g., accuracy, loss function trends).  
    - Use chart libraries (e.g., Recharts) to display training results and model evaluation data.
