@@ -85,6 +85,6 @@ Through this plan, we aim to create a tool that is both an effective learning re
 
    An example integrating ml5.js and KNN, demonstrating how to use drag-and-drop programming for machine learning.
 
-3. **TensorFlow.js**  
-   [https://www.tensorflow.org/js](https://www.tensorflow.org/js)  
+3. **PyTorch**  
+   [https://pytorch.org/](https://pytorch.org/)  
    A library for running machine learning models in the browser, ideal for integration with Blockly.
