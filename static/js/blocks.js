@@ -1,9 +1,9 @@
 /**
- * Custom Blockly block definitions
- * Blocks for machine learning operations
+ * 自定义Blockly块定义
+ * 用于机器学习操作的块
  */
 
-// Data processing blocks
+// 数据处理类块
 Blockly.Blocks['load_dataset'] = {
   init: function() {
     this.appendDummyInput()
@@ -23,7 +23,7 @@ Blockly.Blocks['load_dataset'] = {
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour(230);
-    this.setTooltip("Load a predefined dataset or a custom CSV file");
+    this.setTooltip("加载预定义的数据集或自定义CSV文件");
     this.setHelpUrl("");
   }
 };
@@ -48,7 +48,7 @@ Blockly.Blocks['split_data'] = {
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour(230);
-    this.setTooltip("Split the dataset into training and testing sets");
+    this.setTooltip("将数据集分割为训练集和测试集");
     this.setHelpUrl("");
   }
 };
@@ -74,12 +74,12 @@ Blockly.Blocks['normalize_data'] = {
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour(230);
-    this.setTooltip("Normalize data using different methods");
+    this.setTooltip("对数据进行归一化处理");
     this.setHelpUrl("");
   }
 };
 
-// Model building blocks
+// 模型构建类块
 Blockly.Blocks['create_linear_model'] = {
   init: function() {
     this.appendDummyInput()
@@ -97,7 +97,7 @@ Blockly.Blocks['create_linear_model'] = {
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour(290);
-    this.setTooltip("Create a linear model for regression or classification");
+    this.setTooltip("创建一个线性模型");
     this.setHelpUrl("");
   }
 };
@@ -116,7 +116,7 @@ Blockly.Blocks['create_neural_network'] = {
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour(290);
-    this.setTooltip("Create a neural network model");
+    this.setTooltip("创建一个神经网络模型");
     this.setHelpUrl("");
   }
 };
@@ -152,12 +152,12 @@ Blockly.Blocks['add_layer'] = {
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour(290);
-    this.setTooltip("Add a layer to the neural network model");
+    this.setTooltip("向神经网络模型添加一个层");
     this.setHelpUrl("");
   }
 };
 
-// Training and evaluation blocks
+// 训练与评估类块
 Blockly.Blocks['train_model'] = {
   init: function() {
     this.appendDummyInput()
@@ -184,7 +184,7 @@ Blockly.Blocks['train_model'] = {
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour(160);
-    this.setTooltip("Train the model with training data");
+    this.setTooltip("使用训练数据训练模型");
     this.setHelpUrl("");
   }
 };
@@ -209,7 +209,7 @@ Blockly.Blocks['evaluate_model'] = {
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour(160);
-    this.setTooltip("Evaluate model performance with test data");
+    this.setTooltip("使用测试数据评估模型性能");
     this.setHelpUrl("");
   }
 };
@@ -231,12 +231,12 @@ Blockly.Blocks['predict'] = {
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour(160);
-    this.setTooltip("Make predictions using the model");
+    this.setTooltip("使用模型进行预测");
     this.setHelpUrl("");
   }
 };
 
-// Visualization blocks
+// 可视化类块
 Blockly.Blocks['plot_data'] = {
   init: function() {
     this.appendDummyInput()
@@ -262,7 +262,7 @@ Blockly.Blocks['plot_data'] = {
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour(65);
-    this.setTooltip("Create data visualization charts");
+    this.setTooltip("绘制数据可视化图表");
     this.setHelpUrl("");
   }
 };

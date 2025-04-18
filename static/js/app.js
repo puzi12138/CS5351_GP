@@ -1,28 +1,27 @@
 /**
- * Application main logic
- * Responsible for initializing Blockly workspace, handling user interactions, and executing generated code
+ * 应用程序主逻辑
+ * 负责初始化Blockly工作区、处理用户交互和执行生成的代码
  */
 
-// Global variables
+// 全局变量
 let workspace = null;
 let runningCode = false;
 let currentChart = null;
-let currentDataset = null;
 
-// Initialization function
+// 初始化函数
 document.addEventListener('DOMContentLoaded', function() {
   initBlockly();
   initUI();
 });
 
 /**
- * Initialize Blockly workspace
+ * 初始化Blockly工作区
  */
 function initBlockly() {
-  // Configure workspace
+  // 配置工作区
   const blocklyArea = document.getElementById('blocklyDiv');
   
-  // Create workspace
+  // 创建工作区
   workspace = Blockly.inject(blocklyArea, {
     toolbox: document.getElementById('toolbox'),
     grid: {
@@ -42,47 +41,47 @@ function initBlockly() {
     trashcan: true
   });
 
-  // Add event listeners
+  // 添加事件监听器
   workspace.addChangeListener(onWorkspaceChange);
 }
 
 /**
- * Initialize UI elements and event handlers
+ * 初始化UI元素和事件处理
  */
 function initUI() {
-  // Run button
+  // 运行按钮
   document.getElementById('runModel').addEventListener('click', runCode);
   
-  // Stop button
+  // 停止按钮
   document.getElementById('stopModel').addEventListener('click', stopCode);
   
-  // View code button
+  // 查看代码按钮
   document.getElementById('viewCode').addEventListener('click', showGeneratedCode);
   
-  // View data button
+  // 查看数据按钮
   document.getElementById('viewData').addEventListener('click', showDataViewer);
   
-  // New project button
+  // 新建项目按钮
   document.getElementById('newProject').addEventListener('click', newProject);
   
-  // Save project button
+  // 保存项目按钮
   document.getElementById('saveProject').addEventListener('click', saveProject);
   
-  // Load project button
+  // 加载项目按钮
   document.getElementById('loadProject').addEventListener('click', loadProject);
   
-  // Help button
+  // 帮助按钮
   document.getElementById('helpButton').addEventListener('click', showHelp);
   
-  // Copy code button
+  // 复制代码按钮
   document.getElementById('copyCode').addEventListener('click', copyGeneratedCode);
 }
 
 /**
- * Workspace change event handler
+ * 工作区变化事件处理
  */
 function onWorkspaceChange(event) {
-  // Update code preview when workspace changes
+  // 当工作区发生变化时更新代码预览
   if (event.type === Blockly.Events.BLOCK_MOVE ||
       event.type === Blockly.Events.BLOCK_CREATE ||
       event.type === Blockly.Events.BLOCK_DELETE ||
@@ -92,7 +91,7 @@ function onWorkspaceChange(event) {
 }
 
 /**
- * Update code preview
+ * 更新代码预览
  */
 function updateCodePreview() {
   const code = Blockly.JavaScript.workspaceToCode(workspace);
@@ -100,30 +99,30 @@ function updateCodePreview() {
 }
 
 /**
- * Run generated code
+ * 运行生成的代码
  */
 async function runCode() {
   if (runningCode) {
-    console.log('Code is already running...');
+    console.log('代码已在运行中...');
     return;
   }
   
-  // Clear console and visualization output
+  // 清空控制台和可视化输出
   clearOutputs();
   
-  // Get generated code
+  // 获取生成的代码
   const code = Blockly.JavaScript.workspaceToCode(workspace);
   if (!code.trim()) {
     logToConsole('Error: No executable code. Please drag blocks to the workspace.');
     return;
   }
   
-  // Set running state
+  // 设置运行状态
   runningCode = true;
   logToConsole('Starting code execution...');
   
   try {
-    // Wrap code as async function and execute
+    // 包装代码为异步函数并执行
     const asyncFunction = new Function(`
       return (async function() {
         try {
@@ -146,7 +145,7 @@ async function runCode() {
 }
 
 /**
- * Stop code execution
+ * 停止代码执行
  */
 function stopCode() {
   if (!runningCode) {
@@ -154,19 +153,19 @@ function stopCode() {
     return;
   }
   
-  // In a real application, there should be more complex logic to stop async operations
-  // But in a simple implementation, we just set the flag
+  // 在实际应用中，这里应该有更复杂的逻辑来停止异步操作
+  // 但在简单实现中，我们只设置标志位
   runningCode = false;
   logToConsole('Code execution has been stopped.');
   
-  // Release PyTorch resources
-  // Note: When using ONNX.js, a different resource release method is needed
-  // This needs to be adjusted according to the actual PyTorch.js or ONNX.js implementation used
+  // 释放PyTorch资源
+  // 注意：在使用ONNX.js时，需要不同的资源释放方式
+  // 这里需要根据实际使用的PyTorch.js或ONNX.js实现来调整
   console.log('Model execution stopped and resources released');
 }
 
 /**
- * Show generated code
+ * 显示生成的代码
  */
 function showGeneratedCode() {
   const code = Blockly.JavaScript.workspaceToCode(workspace);
@@ -175,7 +174,7 @@ function showGeneratedCode() {
 }
 
 /**
- * Copy generated code to clipboard
+ * 复制生成的代码到剪贴板
  */
 function copyGeneratedCode() {
   const codeText = document.getElementById('modalCodeOutput').textContent;
@@ -188,207 +187,58 @@ function copyGeneratedCode() {
 }
 
 /**
- * Show data viewer
+ * 显示数据查看器
  */
 function showDataViewer() {
-  // Data visualization implementation
-  if (!currentDataset) {
-    logToConsole('No dataset loaded. Please load a dataset first.');
-    // Switch to the console tab to show the message
-    $('#outputTabs a[href="#console"]').tab('show');
-    return;
-  }
-  
-  // Switch to visualization tab
-  $('#outputTabs a[href="#visualization"]').tab('show');
-  
-  // Clear previous visualizations
-  const visualizationOutput = document.getElementById('visualizationOutput');
-  visualizationOutput.innerHTML = '';
-  
-  // Create a container for the visualization
-  const container = document.createElement('div');
-  container.style.width = '100%';
-  container.style.height = '100%';
-  visualizationOutput.appendChild(container);
-  
-  try {
-    // Check what kind of data we have
-    if (currentDataset.features && currentDataset.features.length > 0) {
-      // Create data summary
-      const summaryDiv = document.createElement('div');
-      summaryDiv.classList.add('data-summary');
-      summaryDiv.innerHTML = `
-        <h4>Dataset Summary</h4>
-        <p>Number of samples: ${currentDataset.features.length}</p>
-        <p>Number of features: ${Array.isArray(currentDataset.features[0]) ? currentDataset.features[0].length : 'N/A'}</p>
-      `;
-      container.appendChild(summaryDiv);
-      
-      // Create canvas for visualization
-      const canvas = document.createElement('canvas');
-      canvas.id = 'dataChart';
-      canvas.style.marginTop = '20px';
-      container.appendChild(canvas);
-      
-      // If the data is appropriate for scatter plot (2D)
-      if (Array.isArray(currentDataset.features[0]) && currentDataset.features[0].length >= 2) {
-        // Prepare data for scatter plot (first two dimensions)
-        const scatterData = {
-          datasets: [{
-            label: 'Dataset Points',
-            data: currentDataset.features.map((feature, i) => ({
-              x: feature[0],
-              y: feature[1],
-              class: currentDataset.labels ? currentDataset.labels[i] : null
-            })),
-            backgroundColor: currentDataset.labels 
-              ? currentDataset.features.map((_, i) => {
-                  // Generate colors based on label
-                  const label = currentDataset.labels[i];
-                  const colors = ['rgba(255, 99, 132, 0.7)', 'rgba(54, 162, 235, 0.7)', 
-                                 'rgba(255, 206, 86, 0.7)', 'rgba(75, 192, 192, 0.7)', 
-                                 'rgba(153, 102, 255, 0.7)', 'rgba(255, 159, 64, 0.7)'];
-                  return colors[label % colors.length];
-                })
-              : 'rgba(54, 162, 235, 0.7)',
-            pointRadius: 5,
-            pointHoverRadius: 7
-          }]
-        };
-        
-        // Create scatter plot
-        new Chart(canvas.getContext('2d'), {
-          type: 'scatter',
-          data: scatterData,
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            title: {
-              display: true,
-              text: 'Dataset Visualization (First Two Dimensions)'
-            },
-            scales: {
-              xAxes: [{
-                scaleLabel: {
-                  display: true,
-                  labelString: 'Feature 1'
-                }
-              }],
-              yAxes: [{
-                scaleLabel: {
-                  display: true,
-                  labelString: 'Feature 2'
-                }
-              }]
-            },
-            tooltips: {
-              callbacks: {
-                label: function(tooltipItem, data) {
-                  const dataPoint = data.datasets[0].data[tooltipItem.index];
-                  let label = `(${dataPoint.x.toFixed(2)}, ${dataPoint.y.toFixed(2)})`;
-                  if (dataPoint.class !== null) {
-                    label += `, Class: ${dataPoint.class}`;
-                  }
-                  return label;
-                }
-              }
-            }
-          }
-        });
-      } else {
-        // For non-2D data, create a bar chart of the first few samples
-        const numSamples = Math.min(10, currentDataset.features.length);
-        const barData = {
-          labels: Array.from({length: numSamples}, (_, i) => `Sample ${i+1}`),
-          datasets: [{
-            label: 'Feature Values',
-            data: currentDataset.features.slice(0, numSamples).map(feature => {
-              // If feature is an array, return its first value
-              return Array.isArray(feature) ? feature[0] : feature;
-            }),
-            backgroundColor: 'rgba(54, 162, 235, 0.7)',
-            borderColor: 'rgba(54, 162, 235, 1)',
-            borderWidth: 1
-          }]
-        };
-        
-        // Create bar chart
-        new Chart(canvas.getContext('2d'), {
-          type: 'bar',
-          data: barData,
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            title: {
-              display: true,
-              text: 'Dataset Preview (First 10 Samples)'
-            },
-            scales: {
-              yAxes: [{
-                scaleLabel: {
-                  display: true,
-                  labelString: 'Value'
-                }
-              }]
-            }
-          }
-        });
-      }
-    } else {
-      container.innerHTML = '<div class="alert alert-warning">Dataset format not supported for visualization</div>';
-    }
-  } catch (error) {
-    console.error('Visualization error:', error);
-    container.innerHTML = `<div class="alert alert-danger">Error creating visualization: ${error.message}</div>`;
-  }
+  // 这里应该实现数据可视化功能
+  // 在简单实现中，我们只显示一个提示
+  alert('Data viewer functionality is under development...');
 }
 
 /**
- * Create new project
+ * 新建项目
  */
 function newProject() {
-  if (confirm('Are you sure you want to create a new project? Any unsaved changes will be lost.')) {
+  if (confirm('确定要创建新项目吗？当前未保存的内容将丢失。')) {
     workspace.clear();
     clearOutputs();
-    currentDataset = null;
   }
 }
 
 /**
- * Save project
+ * 保存项目
  */
 function saveProject() {
   try {
-    // Get workspace XML
+    // 获取工作区XML
     const xml = Blockly.Xml.workspaceToDom(workspace);
     const xmlText = Blockly.Xml.domToText(xml);
     
-    // Create Blob object
+    // 创建Blob对象
     const blob = new Blob([xmlText], {type: 'application/xml'});
     const url = URL.createObjectURL(blob);
     
-    // Create download link
+    // 创建下载链接
     const a = document.createElement('a');
     a.href = url;
     a.download = 'ml_project.xml';
     a.click();
     
-    // Release URL object
+    // 释放URL对象
     URL.revokeObjectURL(url);
     
-    logToConsole('Project saved successfully.');
+    logToConsole('项目已保存。');
   } catch (error) {
-    console.error('Failed to save project:', error);
-    logToConsole(`Failed to save project: ${error.message}`);
+    console.error('保存项目失败:', error);
+    logToConsole(`保存项目失败: ${error.message}`);
   }
 }
 
 /**
- * Load project
+ * 加载项目
  */
 function loadProject() {
-  // Create file input element
+  // 创建文件输入元素
   const fileInput = document.createElement('input');
   fileInput.type = 'file';
   fileInput.accept = '.xml';
@@ -403,14 +253,14 @@ function loadProject() {
         const xmlText = e.target.result;
         const xml = Blockly.Xml.textToDom(xmlText);
         
-        // Clear current workspace and load new project
+        // 清空当前工作区并加载新项目
         workspace.clear();
         Blockly.Xml.domToWorkspace(xml, workspace);
         
-        logToConsole('Project loaded successfully.');
+        logToConsole('项目已加载。');
       } catch (error) {
-        console.error('Failed to load project:', error);
-        logToConsole(`Failed to load project: ${error.message}`);
+        console.error('加载项目失败:', error);
+        logToConsole(`加载项目失败: ${error.message}`);
       }
     };
     
@@ -421,24 +271,24 @@ function loadProject() {
 }
 
 /**
- * Show help information
+ * 显示帮助信息
  */
 function showHelp() {
   $('#helpModal').modal('show');
 }
 
 /**
- * Clear all output areas
+ * 清空所有输出区域
  */
 function clearOutputs() {
-  // Clear console output
+  // 清空控制台输出
   document.getElementById('consoleOutput').textContent = '';
   
-  // Clear visualization area
+  // 清空可视化区域
   const visualizationOutput = document.getElementById('visualizationOutput');
   visualizationOutput.innerHTML = '';
   
-  // Destroy current chart
+  // 销毁当前图表
   if (currentChart) {
     currentChart.destroy();
     currentChart = null;
@@ -446,7 +296,7 @@ function clearOutputs() {
 }
 
 /**
- * Log message to console output
+ * 记录消息到控制台输出
  */
 function logToConsole(message) {
   const consoleOutput = document.getElementById('consoleOutput');
@@ -456,20 +306,20 @@ function logToConsole(message) {
 }
 
 /**
- * Create chart
+ * 创建图表
  */
 function createChart(type, data, options, container = 'visualizationOutput') {
-  // Destroy existing chart
+  // 销毁现有图表
   if (currentChart) {
     currentChart.destroy();
   }
   
-  // Create canvas
+  // 创建画布
   const canvas = document.createElement('canvas');
   document.getElementById(container).innerHTML = '';
   document.getElementById(container).appendChild(canvas);
   
-  // Create chart
+  // 创建图表
   const ctx = canvas.getContext('2d');
   currentChart = new Chart(ctx, {
     type: type,
@@ -480,24 +330,17 @@ function createChart(type, data, options, container = 'visualizationOutput') {
   return currentChart;
 }
 
-// Set dataset globally so it can be used by visualization
-function setCurrentDataset(dataset) {
-  currentDataset = dataset;
-  return dataset;
-}
-
-// Expose commonly used functions to global scope so generated code can use them
+// 将常用函数暴露给全局作用域，以便生成的代码可以使用
 window.logToConsole = logToConsole;
 window.createChart = createChart;
-window.setCurrentDataset = setCurrentDataset;
 
-// Override console.log to redirect output to UI
+// 重写console.log以将输出重定向到UI
 const originalConsoleLog = console.log;
 console.log = function() {
-  // Call original console.log
+  // 调用原始console.log
   originalConsoleLog.apply(console, arguments);
   
-  // Redirect output to UI
+  // 将输出重定向到UI
   const message = Array.from(arguments).map(arg => {
     if (typeof arg === 'object') {
       return JSON.stringify(arg, null, 2);

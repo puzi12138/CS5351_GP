@@ -1,0 +1,29 @@
+2025-04-18 11:09:48,197:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-04-18 11:09:48,198:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-04-18 11:09:48,198:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-04-18 11:09:48,198:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2025-04-18 11:09:48,395:INFO:PyCaret ClassificationExperiment
+2025-04-18 11:09:48,395:INFO:Logging name: clf-default-name
+2025-04-18 11:09:48,395:INFO:ML Usecase: MLUsecase.CLASSIFICATION
+2025-04-18 11:09:48,395:INFO:version 3.3.2
+2025-04-18 11:09:48,395:INFO:Initializing setup()
+2025-04-18 11:09:48,395:INFO:self.USI: 97de
+2025-04-18 11:09:48,395:INFO:self._variable_keys: {'_available_plots', 'logging_param', 'fold_generator', 'fold_shuffle_param', 'fix_imbalance', 'gpu_param', 'X_train', '_ml_usecase', 'html_param', 'gpu_n_jobs_param', 'idx', 'data', 'fold_groups_param', 'is_multiclass', 'n_jobs_param', 'exp_name_log', 'X_test', 'USI', 'target_param', 'memory', 'X', 'y', 'y_train', 'pipeline', 'y_test', 'exp_id', 'log_plots_param', 'seed'}
+2025-04-18 11:09:48,396:INFO:Checking environment
+2025-04-18 11:09:48,396:INFO:python_version: 3.9.6
+2025-04-18 11:09:48,396:INFO:python_build: ('default', 'Mar 12 2025 20:22:46')
+2025-04-18 11:09:48,396:INFO:machine: arm64
+2025-04-18 11:09:48,410:INFO:platform: macOS-15.2-arm64-arm-64bit
+2025-04-18 11:09:48,410:INFO:Memory: svmem(total=17179869184, available=4090331136, percent=76.2, used=6651461632, free=66961408, active=4040818688, inactive=4001906688, wired=2610642944)
+2025-04-18 11:09:48,410:INFO:Physical Core: 8
+2025-04-18 11:09:48,410:INFO:Logical Core: 8
+2025-04-18 11:09:48,410:INFO:Checking libraries
+2025-04-18 11:09:48,410:INFO:System:
+2025-04-18 11:09:48,410:INFO:    python: 3.9.6 (default, Mar 12 2025, 20:22:46)  [Clang 17.0.0 (clang-1700.0.13.3)]
+2025-04-18 11:09:48,411:INFO:executable: /Library/Developer/CommandLineTools/usr/bin/python3
+2025-04-18 11:09:48,411:INFO:   machine: macOS-15.2-arm64-arm-64bit
+2025-04-18 11:09:48,411:INFO:PyCaret required dependencies:
