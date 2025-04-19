@@ -1,14 +1,14 @@
-# Blockly User Guide
+# SnapML User Guide
 
-## What is BlocklyML?
-BlocklyML is a **No Code** training ground for python and ML. This tool is designed to simplify standard machine learning implementation.
+## What is SnapML?
+SnapML is a **No Code** training ground for python and ML. This tool is designed to simplify standard machine learning implementation.
 This tool can assist anyone who wants to start with ML or python. This is a forked project from [Blockly](https://github.com/google/blockly) and adapted for machine learning and Data analytics use-cases:brain:. 
 
-Currently BlocklyML is moving from Alpha -> Beta. Please try the tool and raise ![issue](https://github.com/chekoduadarsh/BlocklyML/issues)
+Currently SnapML is moving from Alpha -> Beta. Please try the tool and raise ![issue](https://github.com/chekoduadarsh/BlocklyML/issues)
 
-## How to use BlocklyML?
+## How to use SnapML?
 
-Want to Use BlocklyML? Its very simple.
+Want to Use SnapML? Its very simple.
 
 ### Using Webtool
 
@@ -58,7 +58,7 @@ Simple as that :man_shrugging:
 
 <img src="https://github.com/chekoduadarsh/BlocklyML/blob/main/media/butttons.png" alt="drawing" width="500"/>
 
-Use Download button form the buttons given above. which will download the `blocklyML.xml` file. This XML file contatins details regarding the layout of the project.This can be used to share or save the layout.
+Use Download button form the buttons given above. which will download the `snapML.xml` file. This XML file contatins details regarding the layout of the project.This can be used to share or save the layout.
 
 
 ## How to upload layouts?

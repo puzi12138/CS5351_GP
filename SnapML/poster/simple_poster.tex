@@ -1,0 +1,104 @@
+\documentclass[a0]{sciposter}
+\usepackage{lipsum}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Define code style
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue},
+    stringstyle=\color{red},
+    commentstyle=\color{green!60!black},
+    numbers=left,
+    numberstyle=\tiny,
+    frame=single
+}
+
+% Define colors
+\definecolor{MainColor}{RGB}{70,130,180} % Steel blue
+\definecolor{SecondColor}{RGB}{176,196,222} % Light steel blue
+
+\title{\huge SnapML: A Visual Programming Tool for Machine Learning Development}
+\author{Author Name}
+\institute{Institution Name}
+\date{\today}
+\conference{CS5351 Group Project, 2025}
+
+\begin{document}
+\maketitle
+
+\begin{multicols}{3}
+    \section{Introduction}
+    \begin{itemize}
+        \item SnapML is a visual programming tool designed to simplify machine learning code development
+        \item It transforms complex coding processes into an intuitive drag-and-drop interface
+        \item Supports real-time code generation and preview
+    \end{itemize}
+    
+    \section{System Architecture}
+    % Add system architecture diagram and description here
+    The SnapML system consists of:
+    \begin{itemize}
+        \item Frontend interface with drag-and-drop components
+        \item Backend code generation engine
+        \item Integration with multiple ML frameworks
+        \item Data visualization tools
+    \end{itemize}
+    
+    \section{Key Features}
+    \begin{itemize}
+        \item Visual programming interface
+        \item Support for multiple machine learning frameworks
+        \item Real-time code generation
+        \item Data visualization
+        \item Model evaluation tools
+    \end{itemize}
+    
+    \section{Case Study: Iris Classification}
+    % Add workflow diagram and code example
+    \begin{lstlisting}
+import seaborn as sns
+from pycaret.classification import *
+from sklearn.model_selection import train_test_split
+import pandas as pd
+
+# Load data
+iris_data = sns.load_dataset("iris")
+setup(iris_data, target = 'species')
+
+# Split data
+train_X, test_X, train_Y, test_Y = train_test_split(
+    iris_data.drop(columns = ['species']),
+    iris_data['species'], 
+    test_size=0.1, 
+    random_state=42)
+    
+# Create and evaluate model
+RandomForest_ML = create_model('rf')
+output = predict_model(RandomForest_ML, data=test_X)
+    \end{lstlisting}
+    
+    \section{Results}
+    % Add performance metrics, charts, etc.
+    The SnapML platform enables:
+    \begin{itemize}
+        \item Rapid prototyping of ML models
+        \item Increased productivity for data scientists
+        \item Better collaboration between technical and non-technical team members
+        \item Simplified educational experience for ML beginners
+    \end{itemize}
+    
+    \section{Conclusion \& Future Work}
+    \begin{itemize}
+        \item SnapML provides an intuitive interface for machine learning development
+        \item Future work will expand framework support and add more advanced visualization tools
+        \item Planned integration with cloud deployment platforms
+        \item Community-driven expansion of component library
+    \end{itemize}
+\end{multicols}
+
+\end{document} 

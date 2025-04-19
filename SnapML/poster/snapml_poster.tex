@@ -1,0 +1,96 @@
+\documentclass[landscape,a0paper]{baposter}
+% 简化海报尺寸设置
+\usepackage[paperwidth=80cm, paperheight=150cm, margin=1cm]{geometry}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Define code style
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue},
+    stringstyle=\color{red},
+    commentstyle=\color{green!60!black},
+    numbers=left,
+    numberstyle=\tiny,
+    frame=single
+}
+
+% Define color theme
+\definecolor{maincolor}{RGB}{70,130,180} % Steel blue
+\definecolor{secondcolor}{RGB}{176,196,222} % Light steel blue
+
+\begin{document}
+
+\begin{poster}{
+    % Poster settings
+    grid=false,
+    columns=3,
+    borderColor=maincolor,
+    headerColorOne=maincolor,
+    headerColorTwo=secondcolor,
+    headerFontColor=white,
+    boxColorOne=white,
+    boxColorTwo=white
+    }
+    % Poster title
+    {\huge\textbf{SnapML: A Visual Programming Tool for Machine Learning Development}} % English title only
+    {\Large\textbf{An Intuitive Interface for Building Machine Learning Workflows}} % Subtitle
+    {Author Name \\ Institution Name} % Author information
+    % Remove logo or comment it out since we don't have one
+    % {\includegraphics[height=5cm]{path/to/logo}} % Institution logo
+    
+    % Introduction section
+    \headerbox{Introduction}{name=introduction,column=0,row=0}{
+        \begin{itemize}
+            \item SnapML is a visual programming tool designed to simplify machine learning code development
+            \item It transforms complex coding processes into an intuitive drag-and-drop interface
+            \item Supports real-time code generation and preview
+        \end{itemize}
+    }
+    
+    % System architecture
+    \headerbox{System Architecture}{name=architecture,column=0,row=1,below=introduction}{
+        % Add system architecture diagram and description here
+    }
+    
+    % Key features
+    \headerbox{Key Features}{name=features,column=1,row=0}{
+        \begin{itemize}
+            \item Visual programming interface
+            \item Support for multiple machine learning frameworks
+            \item Real-time code generation
+            \item Data visualization
+            \item Model evaluation tools
+        \end{itemize}
+    }
+    
+    % Case study: Iris dataset classification
+    \headerbox{Case Study: Iris Classification}{name=casestudy,column=1,row=1,below=features}{
+        % Add workflow diagram and code example
+        \begin{lstlisting}
+import seaborn as sns
+from pycaret.classification import *
+        \end{lstlisting}
+    }
+    
+    % Results
+    \headerbox{Results}{name=results,column=2,row=0}{
+        % Add performance metrics, charts, etc.
+    }
+    
+    % Conclusion and future work
+    \headerbox{Conclusion \& Future Work}{name=conclusion,column=2,row=1,below=results}{
+        \begin{itemize}
+            \item Summary of system advantages
+            \item Future improvement directions
+            \item Potential application scenarios
+        \end{itemize}
+    }
+
+\end{poster}
+\end{document} 

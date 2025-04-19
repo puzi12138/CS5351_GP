@@ -1597,23 +1597,95 @@ def dashboard_app(df, dash_app, plotly_config):
         State("input-other-line", "value"),
     )
     def update_lineplot(n_clicks, input1, input2, input3, input4, input5):
-        input4 = None
-        if strNoneConvert(input1) in df.columns and strNoneConvert(input2) in df.columns:
+        try:
+            # 检查是否点击了提交按钮
+            if n_clicks is None or n_clicks == 0:
+                return "请填写必需的字段并点击'提交'以生成折线图！"
 
+            # 检查必需的输入
+            if input1 is None or input2 is None:
+                return "请选择X轴和Y轴的数据列！"
+
+            # 检查列是否存在
+            if input1 not in df.columns:
+                return f"错误：X轴列 '{input1}' 不存在于数据中"
+            if input2 not in df.columns:
+                return f"错误：Y轴列 '{input2}' 不存在于数据中"
+
+            # 构建参数字典
             input_parametes = {
-                "x": strNoneConvert(input1),
-                "y": strNoneConvert(input2),
+                "x": input1,
+                "y": input2,
                 "color": strNoneConvert(input3),
                 "line_group": strNoneConvert(input4),
                 "template": plot_theme,
-                "color_continuous_scale": plotly_color_continuous_scale,
             }
 
-            input_parametes.update(otherinputtodict(input5))
+            # 添加其他参数
+            if input5:
+                other_params = otherinputtodict(input5)
+                # 移除不支持的参数
+                if 'color_continuous_scale' in other_params:
+                    del other_params['color_continuous_scale']
+                input_parametes.update(other_params)
 
+            # 创建图表
             fig = px.line(df, **input_parametes)
+            
+            # 优化图表样式
+            fig.update_traces(
+                line=dict(width=2),  # 增加线条宽度
+                mode='lines+markers'  # 添加数据点标记
+            )
+            
+            # 使用清华紫色主题
+            colors = ['#82318E', '#B57BC0', '#DBC7E2', '#411C47', '#693C73', '#916B99']
+            if input3 is None:  # 如果没有设置颜色分组
+                fig.update_traces(line_color='#82318E')  # 使用清华紫
+            else:
+                # 为不同的分组设置不同的紫色系颜色
+                for i, trace in enumerate(fig.data):
+                    trace.line.color = colors[i % len(colors)]
+            
+            # 更新布局
+            fig.update_layout(
+                plot_bgcolor='white',  # 设置白色背景
+                paper_bgcolor='white',
+                xaxis=dict(
+                    showgrid=True,
+                    gridwidth=1,
+                    gridcolor='#f0f0f0',
+                    title=dict(
+                        text=input1,
+                        font=dict(color='#82318E')
+                    )
+                ),
+                yaxis=dict(
+                    showgrid=True,
+                    gridwidth=1,
+                    gridcolor='#f0f0f0',
+                    title=dict(
+                        text=input2,
+                        font=dict(color='#82318E')
+                    )
+                ),
+                title=dict(
+                    text=f"{input2} vs {input1}",
+                    x=0.5,
+                    y=0.95,
+                    font=dict(color='#82318E')
+                ),
+                hoverlabel=dict(
+                    bgcolor='white',
+                    font_size=12,
+                    font_family="Poppins"
+                )
+            )
+
             return dcc.Graph(id="graph-line-tabs", figure=fig)
-        return "Fill the required fields and click on 'Submit' to generate the graph you want!!"
+
+        except Exception as e:
+            return f"生成折线图时出错：{str(e)}"
 
     @dash_app.callback(
         Output("output-state-bar", "children"),
@@ -1651,21 +1723,92 @@ def dashboard_app(df, dash_app, plotly_config):
         State("input-other-pie", "value"),
     )
     def update_pieplot(n_clicks, input1, input2, input3):
-        input4 = None
-        if strNoneConvert(input1) in df.columns:
+        try:
+            # 检查是否点击了提交按钮
+            if n_clicks is None or n_clicks == 0:
+                return "请填写必需的字段并点击'提交'以生成饼图！"
 
+            # 检查必需的输入
+            if input1 is None:
+                return "请选择值列（必需）！"
+            if input2 is None:
+                return "请选择名称列（必需）！"
+
+            # 检查列是否存在
+            if input1 not in df.columns:
+                return f"错误：值列 '{input1}' 不存在于数据中"
+            if input2 not in df.columns:
+                return f"错误：名称列 '{input2}' 不存在于数据中"
+
+            # 构建参数字典
             input_parametes = {
-                "values": strNoneConvert(input1),
-                "names": strNoneConvert(input2),
+                "values": input1,
+                "names": input2,
                 "template": plot_theme,
-                "color_continuous_scale": plotly_color_continuous_scale,
+                "hole": 0.3,  # 添加甜甜圈效果
             }
 
-            input_parametes.update(otherinputtodict(input3))
+            # 添加其他参数
+            if input3:
+                other_params = otherinputtodict(input3)
+                # 移除不支持的参数
+                if 'color_continuous_scale' in other_params:
+                    del other_params['color_continuous_scale']
+                input_parametes.update(other_params)
 
+            # 创建图表
             fig = px.pie(df, **input_parametes)
+            
+            # 设置清华紫色系列配色
+            colors = ['#82318E', '#B57BC0', '#DBC7E2', '#411C47', '#693C73', '#916B99', 
+                     '#9B4B9F', '#C89ED5', '#E5D3EA', '#2E1133', '#4D2659', '#6E3B80']
+            
+            # 更新跟踪器颜色
+            fig.update_traces(
+                marker=dict(colors=colors),
+                textposition='inside',
+                textinfo='percent+label',
+                hovertemplate="<b>%{label}</b><br>" +
+                            "数值: %{value}<br>" +
+                            "占比: %{percent}<br>" +
+                            "<extra></extra>"  # 移除额外的悬停框
+            )
+            
+            # 更新布局
+            fig.update_layout(
+                showlegend=True,
+                plot_bgcolor='white',
+                paper_bgcolor='white',
+                title=dict(
+                    text=f"{input2}的分布",
+                    x=0.5,
+                    y=0.95,
+                    font=dict(
+                        color='#82318E',
+                        size=20
+                    )
+                ),
+                legend=dict(
+                    orientation="h",
+                    yanchor="bottom",
+                    y=1.02,
+                    xanchor="right",
+                    x=1,
+                    font=dict(
+                        color='#82318E'
+                    )
+                ),
+                hoverlabel=dict(
+                    bgcolor='white',
+                    font_size=12,
+                    font_family="Poppins"
+                )
+            )
+
             return dcc.Graph(id="graph-pie-tabs", figure=fig)
-        return "Fill the required fields and click on 'Submit' to generate the graph you want!!"
+
+        except Exception as e:
+            return f"生成饼图时出错：{str(e)}"
 
     @dash_app.callback(
         Output("output-state-tree", "children"),
@@ -1751,22 +1894,98 @@ def dashboard_app(df, dash_app, plotly_config):
         State("input-other-hist", "value"),
     )
     def update_histogram(n_clicks, input1, input2, input3):
-        if input1 is not None:
-            if input1 in df.columns:
+        try:
+            # 检查是否点击了提交按钮
+            if n_clicks is None or n_clicks == 0:
+                return "请填写必需的字段并点击'提交'以生成直方图！"
 
-                input_parametes = {
-                    "x": strNoneConvert(input1),
-                    "color": strNoneConvert(input2),
-                    "template": plot_theme,
-                    "color_continuous_scale": plotly_color_continuous_scale,
-                }
+            # 检查必需的输入
+            if input1 is None:
+                return "请选择要分析的数据列！"
 
-                input_parametes.update(otherinputtodict(input3))
+            # 检查列是否存在
+            if input1 not in df.columns:
+                return f"错误：数据列 '{input1}' 不存在于数据中"
 
-                fig = px.histogram(df, **input_parametes)
-                return dcc.Graph(id="graph-hist-tabs", figure=fig)
+            # 构建参数字典
+            input_parametes = {
+                "x": input1,
+                "color": strNoneConvert(input2),
+                "template": plot_theme,
+                "opacity": 0.75,
+                "barmode": "overlay"  # 当有多个分组时重叠显示
+            }
 
-        return "Fill the required fields and click on 'Submit' to generate the graph you want!!"
+            # 添加其他参数
+            if input3:
+                other_params = otherinputtodict(input3)
+                if 'color_continuous_scale' in other_params:
+                    del other_params['color_continuous_scale']
+                input_parametes.update(other_params)
+
+            # 创建图表
+            fig = px.histogram(df, **input_parametes)
+            
+            # 设置清华紫色系列配色
+            colors = ['#82318E', '#B57BC0', '#DBC7E2', '#411C47', '#693C73', '#916B99']
+            
+            # 更新跟踪器样式
+            if input2 is None:  # 如果没有分组
+                fig.update_traces(
+                    marker=dict(
+                        color='#82318E',
+                        line=dict(color='white', width=1)
+                    )
+                )
+            else:  # 如果有分组
+                for i, trace in enumerate(fig.data):
+                    trace.marker.color = colors[i % len(colors)]
+                    trace.marker.line = dict(color='white', width=1)
+            
+            # 更新布局
+            fig.update_layout(
+                plot_bgcolor='white',
+                paper_bgcolor='white',
+                title=dict(
+                    text=f"{input1}的分布直方图",
+                    x=0.5,
+                    y=0.95,
+                    font=dict(color='#82318E', size=20)
+                ),
+                xaxis=dict(
+                    title=dict(
+                        text=input1,
+                        font=dict(color='#82318E')
+                    ),
+                    showgrid=True,
+                    gridwidth=1,
+                    gridcolor='#f0f0f0'
+                ),
+                yaxis=dict(
+                    title=dict(
+                        text="频数",
+                        font=dict(color='#82318E')
+                    ),
+                    showgrid=True,
+                    gridwidth=1,
+                    gridcolor='#f0f0f0'
+                ),
+                legend=dict(
+                    font=dict(color='#82318E'),
+                    title=dict(font=dict(color='#82318E'))
+                ),
+                hoverlabel=dict(
+                    bgcolor='white',
+                    font_size=12,
+                    font_family="Poppins"
+                ),
+                bargap=0.1  # 柱子之间的间隔
+            )
+
+            return dcc.Graph(id="graph-hist-tabs", figure=fig)
+
+        except Exception as e:
+            return f"生成直方图时出错：{str(e)}"
 
     @dash_app.callback(
         Output("output-state-area", "children"),
@@ -1778,22 +1997,100 @@ def dashboard_app(df, dash_app, plotly_config):
         State("input-other-area", "value"),
     )
     def update_areaplot(n_clicks, input1, input2, input3, input4, input5):
-        input4 = None
-        if strNoneConvert(input1) in df.columns and strNoneConvert(input2) in df.columns:
+        try:
+            # Check if submit button was clicked
+            if n_clicks is None or n_clicks == 0:
+                return "Please fill in the required fields and click 'Submit' to generate the area plot."
 
+            # Check required inputs
+            if input1 is None or input2 is None:
+                return "Please select both X and Y axis columns!"
+
+            # Check if columns exist
+            if input1 not in df.columns:
+                return f"Error: X-axis column '{input1}' does not exist in the data"
+            if input2 not in df.columns:
+                return f"Error: Y-axis column '{input2}' does not exist in the data"
+
+            # Build parameter dictionary
             input_parametes = {
-                "x": strNoneConvert(input1),
-                "y": strNoneConvert(input2),
+                "x": input1,
+                "y": input2,
                 "color": strNoneConvert(input3),
                 "line_group": strNoneConvert(input4),
-                "template": plot_theme,
-                "color_continuous_scale": plotly_color_continuous_scale,
+                "template": plot_theme
             }
-            input_parametes.update(otherinputtodict(input5))
 
+            # Add other parameters
+            if input5:
+                other_params = otherinputtodict(input5)
+                if 'color_continuous_scale' in other_params:
+                    del other_params['color_continuous_scale']
+                input_parametes.update(other_params)
+
+            # Create figure
             fig = px.area(df, **input_parametes)
+            
+            # Set Tsinghua purple color scheme
+            colors = ['#82318E', '#B57BC0', '#DBC7E2', '#411C47', '#693C73', '#916B99']
+            
+            # Update trace styles
+            if input3 is None:  # If no color grouping
+                fig.update_traces(
+                    line=dict(color='#82318E', width=2),
+                    fillcolor='rgba(130, 49, 142, 0.2)'
+                )
+            else:  # If color grouping exists
+                for i, trace in enumerate(fig.data):
+                    color = colors[i % len(colors)]
+                    rgb_color = px.colors.hex_to_rgb(color)
+                    trace.line.color = color
+                    trace.line.width = 2
+                    trace.fillcolor = f'rgba({rgb_color[0]}, {rgb_color[1]}, {rgb_color[2]}, 0.2)'
+            
+            # Update layout
+            fig.update_layout(
+                plot_bgcolor='white',
+                paper_bgcolor='white',
+                title=dict(
+                    text=f"Area Plot: {input2} vs {input1}",
+                    x=0.5,
+                    y=0.95,
+                    font=dict(color='#82318E', size=20)
+                ),
+                xaxis=dict(
+                    title=dict(
+                        text=input1,
+                        font=dict(color='#82318E')
+                    ),
+                    showgrid=True,
+                    gridwidth=1,
+                    gridcolor='#f0f0f0'
+                ),
+                yaxis=dict(
+                    title=dict(
+                        text=input2,
+                        font=dict(color='#82318E')
+                    ),
+                    showgrid=True,
+                    gridwidth=1,
+                    gridcolor='#f0f0f0'
+                ),
+                legend=dict(
+                    font=dict(color='#82318E'),
+                    title=dict(font=dict(color='#82318E'))
+                ),
+                hoverlabel=dict(
+                    bgcolor='white',
+                    font_size=12,
+                    font_family="Poppins"
+                )
+            )
+
             return dcc.Graph(id="graph-area-tabs", figure=fig)
-        return "Fill the required fields and click on 'Submit' to generate the graph you want!!"
+
+        except Exception as e:
+            return f"Error generating area plot: {str(e)}"
 
     @dash_app.callback(
         Output("output-state-heat", "children"),
@@ -1804,22 +2101,84 @@ def dashboard_app(df, dash_app, plotly_config):
         State("input-other-heat", "value"),
     )
     def update_heatplot(n_clicks, input1, input2, input3, input4):
-        if not input1 is None and not input2 is None:
-            if strNoneConvert(input1) in df.columns and strNoneConvert(input2) in df.columns:
+        try:
+            # Check if submit button was clicked
+            if n_clicks is None or n_clicks == 0:
+                return "Please fill in the required fields and click 'Submit' to generate the heat map."
 
-                input_parametes = {
-                    "x": strNoneConvert(input1),
-                    "y": strNoneConvert(input2),
-                    "z": strNoneConvert(input3),
-                    "template": plot_theme,
-                    "color_continuous_scale": plotly_color_continuous_scale,
-                }
-                input_parametes.update(otherinputtodict(input4))
+            # Check required inputs
+            if input1 is None or input2 is None:
+                return "Please select both X and Y axis columns!"
 
-                fig = px.density_heatmap(df, **input_parametes)
-                return dcc.Graph(id="graph-heat-tabs", figure=fig)
+            # Check if columns exist
+            if input1 not in df.columns:
+                return f"Error: X-axis column '{input1}' does not exist in the data"
+            if input2 not in df.columns:
+                return f"Error: Y-axis column '{input2}' does not exist in the data"
 
-        return "Fill the required fields and click on 'Submit' to generate the graph you want!!"
+            # Build parameter dictionary
+            input_parametes = {
+                "x": input1,
+                "y": input2,
+                "z": strNoneConvert(input3),
+                "template": plot_theme,
+                "color_continuous_scale": ['#F8F4FA', '#82318E']  # Light purple to Tsinghua purple
+            }
+
+            # Add other parameters
+            if input4:
+                other_params = otherinputtodict(input4)
+                input_parametes.update(other_params)
+
+            # Create figure
+            fig = px.density_heatmap(df, **input_parametes)
+            
+            # Update layout
+            fig.update_layout(
+                plot_bgcolor='white',
+                paper_bgcolor='white',
+                title=dict(
+                    text=f"Heat Map: {input2} vs {input1}",
+                    x=0.5,
+                    y=0.95,
+                    font=dict(color='#82318E', size=20)
+                ),
+                xaxis=dict(
+                    title=dict(
+                        text=input1,
+                        font=dict(color='#82318E')
+                    ),
+                    showgrid=True,
+                    gridwidth=1,
+                    gridcolor='#f0f0f0'
+                ),
+                yaxis=dict(
+                    title=dict(
+                        text=input2,
+                        font=dict(color='#82318E')
+                    ),
+                    showgrid=True,
+                    gridwidth=1,
+                    gridcolor='#f0f0f0'
+                ),
+                coloraxis_colorbar=dict(
+                    title=dict(
+                        text="Density",
+                        font=dict(color='#82318E')
+                    ),
+                    tickfont=dict(color='#82318E')
+                ),
+                hoverlabel=dict(
+                    bgcolor='white',
+                    font_size=12,
+                    font_family="Poppins"
+                )
+            )
+
+            return dcc.Graph(id="graph-heat-tabs", figure=fig)
+
+        except Exception as e:
+            return f"Error generating heat map: {str(e)}"
 
     @dash_app.callback(
         Output("output-state-violin", "children"),
@@ -1830,21 +2189,108 @@ def dashboard_app(df, dash_app, plotly_config):
         State("input-other-violin", "value"),
     )
     def update_violinplot(n_clicks, input1, input2, input3, input4):
-        if not input1 is None:
-            if strNoneConvert(input1) in df.columns:
+        try:
+            # Check if submit button was clicked
+            if n_clicks is None or n_clicks == 0:
+                return "Please fill in the required fields and click 'Submit' to generate the violin plot."
 
-                input_parametes = {
-                    "x": strNoneConvert(input2),
-                    "y": strNoneConvert(input1),
-                    "color": strNoneConvert(input3),
-                    "template": plot_theme,
-                    "color_continuous_scale": plotly_color_continuous_scale,
-                }
-                input_parametes.update(otherinputtodict(input4))
+            # Check required inputs
+            if input1 is None or input2 is None:
+                return "Please select both X and Y axis columns!"
 
-                fig = px.violin(df, **input_parametes)
-                return dcc.Graph(id="graph-violin-tabs", figure=fig)
-        return "Fill the required fields and click on 'Submit' to generate the graph you want!!"
+            # Check if columns exist
+            if input1 not in df.columns:
+                return f"Error: X-axis column '{input1}' does not exist in the data"
+            if input2 not in df.columns:
+                return f"Error: Y-axis column '{input2}' does not exist in the data"
+
+            # Build parameter dictionary
+            input_parametes = {
+                "x": input1,
+                "y": input2,
+                "color": strNoneConvert(input3),
+                "template": plot_theme,
+                "points": "all",  # Show all points
+                "box": True       # Show box plot inside violin
+            }
+
+            # Add other parameters
+            if input4:
+                other_params = otherinputtodict(input4)
+                if 'color_continuous_scale' in other_params:
+                    del other_params['color_continuous_scale']
+                input_parametes.update(other_params)
+
+            # Create figure
+            fig = px.violin(df, **input_parametes)
+            
+            # Set Tsinghua purple color scheme
+            colors = ['#82318E', '#B57BC0', '#DBC7E2', '#411C47', '#693C73', '#916B99']
+            
+            # Update trace styles
+            if input3 is None:  # If no color grouping
+                fig.update_traces(
+                    fillcolor='rgba(130, 49, 142, 0.5)',
+                    line_color='#82318E',
+                    marker=dict(
+                        color='#82318E',
+                        size=4
+                    ),
+                    box_line_color='#82318E'
+                )
+            else:  # If color grouping exists
+                for i, trace in enumerate(fig.data):
+                    color = colors[i % len(colors)]
+                    rgb_color = px.colors.hex_to_rgb(color)
+                    trace.fillcolor = f'rgba({rgb_color[0]}, {rgb_color[1]}, {rgb_color[2]}, 0.5)'
+                    trace.line.color = color
+                    trace.marker.color = color
+                    trace.marker.size = 4
+                    trace.box.line.color = color
+            
+            # Update layout
+            fig.update_layout(
+                plot_bgcolor='white',
+                paper_bgcolor='white',
+                title=dict(
+                    text=f"Violin Plot: {input2} Distribution by {input1}",
+                    x=0.5,
+                    y=0.95,
+                    font=dict(color='#82318E', size=20)
+                ),
+                xaxis=dict(
+                    title=dict(
+                        text=input1,
+                        font=dict(color='#82318E')
+                    ),
+                    showgrid=True,
+                    gridwidth=1,
+                    gridcolor='#f0f0f0'
+                ),
+                yaxis=dict(
+                    title=dict(
+                        text=input2,
+                        font=dict(color='#82318E')
+                    ),
+                    showgrid=True,
+                    gridwidth=1,
+                    gridcolor='#f0f0f0'
+                ),
+                legend=dict(
+                    font=dict(color='#82318E'),
+                    title=dict(font=dict(color='#82318E'))
+                ),
+                hoverlabel=dict(
+                    bgcolor='white',
+                    font_size=12,
+                    font_family="Poppins"
+                )
+            )
+
+            return dcc.Graph(id="graph-violin-tabs", figure=fig)
+
+        except Exception as e:
+            return f"Error generating violin plot: {str(e)}"
 
     @dash_app.callback(
         Output("output-state-regscatter", "children"),
@@ -2039,23 +2485,21 @@ def dashboard_app(df, dash_app, plotly_config):
         State("input-r-polar", "value"),
         State("input-theta-polar", "value"),
         State("input-color-polar", "value"),
-        State("input-color-polar", "value"),
         State("input-symbol-polar", "value"),
         State("input-other-polar", "value"),
     )
-    def update_polarplot(n_clicks, input1, input2, input3, input4, input5, input6):
+    def update_polarplot(n_clicks, input1, input2, input3, input4, input5):
         if strNoneConvert(input1) in df.columns and strNoneConvert(input2) in df.columns:
 
             input_parametes = {
                 "r": strNoneConvert(input1),
                 "theta": strNoneConvert(input2),
                 "color": strNoneConvert(input3),
-                "size": strNoneConvert(input4),
-                "symbol": strNoneConvert(input5),
+                "symbol": strNoneConvert(input4),
                 "template": plot_theme,
                 "color_continuous_scale": plotly_color_continuous_scale,
             }
-            input_parametes.update(otherinputtodict(input6))
+            input_parametes.update(otherinputtodict(input5))
 
             fig = px.scatter_polar(df, **input_parametes)
             return dcc.Graph(id="graph-polar-tabs", figure=fig)
